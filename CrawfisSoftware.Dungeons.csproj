@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Nullable>enable</Nullable>
+    <RootNamespace>CrawfisSoftware.Dungeons</RootNamespace>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <DocumentationFile>$(SolutionDir)Documentation\CrawfisSoftware.Dungeons.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Graph\IGraph\CrawfisSoftware.IGraph.csproj" />
+    <ProjectReference Include="..\Graph\Maze\CrawfisSoftware.Maze.csproj" />
+  </ItemGroup>
+
+</Project>
