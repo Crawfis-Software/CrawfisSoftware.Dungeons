@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace CrawfisSoftware.Dungeons
 {
+    public delegate bool SpatialRoomGeneratorDelegate<R>(AbstractRoom<R> roomData, out GridRoom<R> room);
     /// <summary>
     /// A class to randomly place rooms in a grid.
     /// </summary>
@@ -21,18 +22,16 @@ namespace CrawfisSoftware.Dungeons
         /// Get the height of the grid
         /// </summary>
         public int GridHeight { get; private set; }
+
+        /// <summary>
+        /// Get or set the room generator function. It should return a GridRoom given and AbstractRoom.
+        /// </summary>
+        public SpatialRoomGeneratorDelegate<R> SpatialRoomGenerator { get; set; }
         /// <summary>
         /// Get or set the outside wall buffer size
         /// </summary>
         public int RoomMoatSize { get; set; } = 1;
-        /// <summary>
-        /// Get or set the maximum room size to create
-        /// </summary>
-        public int MaxRoomSize { get; set; } = 9;
-        /// <summary>
-        /// Get or set the minimum room size to create
-        /// </summary>
-        public int MinRoomSize { get; set; } = 4;
+
         /// <summary>
         /// Get or set the type of rasterizer to use for the passage.
         /// </summary>
@@ -107,7 +106,7 @@ namespace CrawfisSoftware.Dungeons
             int roomTry = 0;
             while (roomTry < numberOfTries)
             {
-                room = GenerateRoom(roomData);
+                if (!this.SpatialRoomGenerator(roomData, out room)) return false;
                 roomTry++;
                 bool canPlace = CheckForOverlap(room);
                 if (canPlace)
@@ -118,19 +117,6 @@ namespace CrawfisSoftware.Dungeons
             }
             room = default(GridRoom<R>);
             return false;
-        }
-
-        private GridRoom<R> GenerateRoom(AbstractRoom<R> abstractRoom)
-        {
-            int deltaWidth = MaxRoomSize - MinRoomSize + 1;
-            int roomWidth = MinRoomSize + RandomGenerator.Next(deltaWidth);
-            int roomHeight = MinRoomSize + RandomGenerator.Next(deltaWidth);
-            int minimumXCoord = GridWidth - roomWidth;
-            int minimumYCoord = GridHeight - roomHeight;
-            int minX = RandomGenerator.Next(minimumXCoord);
-            int minY = RandomGenerator.Next(minimumYCoord);
-            GridRoom<R> room = new GridRoom<R>(minX, minY, roomWidth, roomHeight, abstractRoom.RoomData);
-            return room;
         }
         private bool CheckForOverlap(GridRoom<R> room)
         {
