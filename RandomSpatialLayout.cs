@@ -3,16 +3,16 @@ using System.Collections.Generic;
 
 namespace CrawfisSoftware.Dungeons
 {
-    public delegate bool SpatialRoomGeneratorDelegate<R>(AbstractRoom<R> roomData, out GridRoom<R> room);
+    public delegate bool SpatialRoomGeneratorDelegate<R, Q>(AbstractRoom<R> roomData, out GridRoom<Q> room);
     /// <summary>
     /// A class to randomly place rooms in a grid.
     /// </summary>
     /// <typeparam name="R">The type used for room data</typeparam>
     /// <typeparam name="C">The type used for connection data</typeparam>
-    public class RandomSpatialLayout<R, C>
+    public class RandomSpatialLayout<R, C, Q>
     {
         private DungeonGraph<R, C> _dungeonGraph;
-        private Dictionary<int, GridRoom<R>> _roomList = new Dictionary<int, GridRoom<R>>();
+        private Dictionary<int, GridRoom<Q>> _roomList = new Dictionary<int, GridRoom<Q>>();
 
         /// <summary>
         /// Get the width of the grid
@@ -26,7 +26,7 @@ namespace CrawfisSoftware.Dungeons
         /// <summary>
         /// Get or set the room generator function. It should return a GridRoom given and AbstractRoom.
         /// </summary>
-        public SpatialRoomGeneratorDelegate<R> SpatialRoomGenerator { get; set; }
+        public SpatialRoomGeneratorDelegate<R, Q> SpatialRoomGenerator { get; set; }
         /// <summary>
         /// Get or set the outside wall buffer size
         /// </summary>
@@ -61,16 +61,16 @@ namespace CrawfisSoftware.Dungeons
         /// Randomly place the rooms in the grid.
         /// </summary>
         /// <returns>A new <c>DungeonGraph></c> with <c>GridRoom</c>'s and <c>GridPassageConnectionData</c> connections.</returns>
-        public DungeonGraph<GridRoom<R>, GridPassageConnectionData<C>> RandomRoomPlacement()
+        public DungeonGraph<GridRoom<Q>, GridPassageConnectionData<C>> PlaceRooms()
         {
-            var newDungeonBuilder = new DungeonGraphBuilder<GridRoom<R>, GridPassageConnectionData<C>>();
+            var newDungeonBuilder = new DungeonGraphBuilder<GridRoom<Q>, GridPassageConnectionData<C>>();
             var roomMapping = new Dictionary<int, int>();
             // Loop over each room in the dungeon graph in some specified order.
             foreach (var roomId in _dungeonGraph.Nodes)
             {
                 // Randomly place the room in the grid.
-                var roomData = _dungeonGraph.GetNodeLabel(roomId);
-                if (TryPlaceRoom(roomData, MaxNumberOfTriesPerRoom, out GridRoom<R> room))
+                AbstractRoom<R> roomData = _dungeonGraph.GetNodeLabel(roomId);
+                if (TryPlaceRoom(roomData, MaxNumberOfTriesPerRoom, out GridRoom<Q> room))
                 {
                     _roomList[roomId] = room;
                     // Create a GridRoom with the specified size and location and add it to the new DungeonGraph.
@@ -101,7 +101,7 @@ namespace CrawfisSoftware.Dungeons
             return newDungeonBuilder.Build();
         }
 
-        private bool TryPlaceRoom(AbstractRoom<R> roomData, int numberOfTries, out GridRoom<R> room)
+        private bool TryPlaceRoom(AbstractRoom<R> roomData, int numberOfTries, out GridRoom<Q> room)
         {
             int roomTry = 0;
             while (roomTry < numberOfTries)
@@ -115,15 +115,15 @@ namespace CrawfisSoftware.Dungeons
                 }
 
             }
-            room = default(GridRoom<R>);
+            room = default(GridRoom<Q>);
             return false;
         }
-        private bool CheckForOverlap(GridRoom<R> room)
+        private bool CheckForOverlap(GridRoom<Q> room)
         {
             bool canPlace = true;
-            foreach (GridRoom<R> placedRoom in _roomList.Values)
+            foreach (GridRoom<Q> placedRoom in _roomList.Values)
             {
-                int distance = GridRoom<R>.RoomDistance(placedRoom, room);
+                int distance = GridRoom<Q>.RoomDistance(placedRoom, room);
                 // Ensure they are RoomMoatSize apart.
                 if (distance - RoomMoatSize < 0)
                 {

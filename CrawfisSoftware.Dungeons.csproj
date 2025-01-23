@@ -6,6 +6,7 @@
     <RootNamespace>CrawfisSoftware.Dungeons</RootNamespace>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DocumentationFile>$(SolutionDir)Documentation\CrawfisSoftware.Dungeons.xml</DocumentationFile>
+    <Copyright>Crawfis Software, 2025</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
