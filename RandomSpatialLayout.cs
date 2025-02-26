@@ -3,12 +3,21 @@ using System.Collections.Generic;
 
 namespace CrawfisSoftware.Dungeons
 {
+    /// <summary>
+    /// A delegate to generate a room in a grid.
+    /// </summary>
+    /// <typeparam name="R">The type used for room data</typeparam>
+    /// <typeparam name="Q">The type used for resulting GridRoom data</typeparam>
+    /// <param name="roomData">An AbstractRoom{R}.</param>
+    /// <param name="room">Outputs a GridRoom{Q}.</param>
+    /// <returns>True is the room was able to be generated. False otherwise.</returns>
     public delegate bool SpatialRoomGeneratorDelegate<R, Q>(AbstractRoom<R> roomData, out GridRoom<Q> room);
     /// <summary>
     /// A class to randomly place rooms in a grid.
     /// </summary>
     /// <typeparam name="R">The type used for room data</typeparam>
     /// <typeparam name="C">The type used for connection data</typeparam>
+    /// <typeparam name="Q">The type used for resulting GridRoom data</typeparam>
     public class RandomSpatialLayout<R, C, Q>
     {
         private DungeonGraph<R, C> _dungeonGraph;
@@ -56,6 +65,11 @@ namespace CrawfisSoftware.Dungeons
             GridHeight = gridHeight;
             _dungeonGraph = dungeonGraph;
             RandomGenerator = new Random();
+            SpatialRoomGenerator = (AbstractRoom<R> _, out GridRoom<Q> room) =>
+            {
+                room = default(GridRoom<Q>);
+                return false;
+            };
         }
         /// <summary>
         /// Randomly place the rooms in the grid.

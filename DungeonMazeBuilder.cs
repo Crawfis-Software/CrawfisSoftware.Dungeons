@@ -1,10 +1,7 @@
 ﻿using CrawfisSoftware.Collections.Graph;
-using CrawfisSoftware.Collections.Maze;
-using CrawfisSoftware.Collections.Path;
 using CrawfisSoftware.Maze;
 
 using System;
-using System.Collections.Generic;
 
 namespace CrawfisSoftware.Dungeons
 {
