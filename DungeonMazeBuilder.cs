@@ -42,7 +42,7 @@ namespace CrawfisSoftware.Dungeons
                 {
                     mazePathCost = new MazePathCost<N, E>(mazeBuilder);
                 }
-                CarvePassage(mazeBuilder, rasterizerType, room1, room2, mazePathCost);
+                CarveCorridor(mazeBuilder, rasterizerType, room1, room2, mazePathCost);
             }
         }
 
@@ -57,7 +57,7 @@ namespace CrawfisSoftware.Dungeons
         /// <param name="room1">A <c>GridRoom</c> to carve from.</param>
         /// <param name="room2">A <c>GridRoom</c> to carve to.</param>
         /// <param name="mazePathCost">An <c>MazePathCost</c> used to determine the cost of an edge (if needed - can be null).</param>
-        public static void CarvePassage<N, E, R>(MazeBuilderAbstract<N, E> mazeBuilder, PassageRasterizerType rasterizer, GridRoom<R> room1, GridRoom<R> room2, MazePathCost<N, E> mazePathCost = null)
+        public static void CarveCorridor<N, E, R>(this MazeBuilderAbstract<N, E> mazeBuilder, PassageRasterizerType rasterizer, GridRoom<R> room1, GridRoom<R> room2, MazePathCost<N, E> mazePathCost = null)
         {
             switch (rasterizer)
             {
