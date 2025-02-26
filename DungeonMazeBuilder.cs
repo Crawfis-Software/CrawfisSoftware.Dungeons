@@ -20,7 +20,7 @@ namespace CrawfisSoftware.Dungeons
         /// <param name="mazeBuilder">The underlying MazeBuilder</param>
         /// <param name="dungeonGraph">A dungeon graph or <c>GridRoom</c>'s and <c>GridPassageConnectionData</c>.</param>
         /// <param name="preserveExistingCells">Boolean indicating whether to only replace maze cells that are undefined.</param>
-        public static void RasterizeDungeon<N, E, R, C>(this MazeBuilderAbstract<N, E> mazeBuilder, DungeonGraph<GridRoom<R>, GridPassageConnectionData<C>> dungeonGraph, bool preserveExistingCells = false)
+        public static void RasterizeDungeon<N, E, R, C>(this IMazeBuilder<N, E> mazeBuilder, DungeonGraph<GridRoom<R>, GridPassageConnectionData<C>> dungeonGraph, bool preserveExistingCells = false)
         {
             foreach (var roomId in dungeonGraph.Nodes)
             {
@@ -54,7 +54,7 @@ namespace CrawfisSoftware.Dungeons
         /// <param name="room1">A <c>GridRoom</c> to carve from.</param>
         /// <param name="room2">A <c>GridRoom</c> to carve to.</param>
         /// <param name="mazePathCost">An <c>MazePathCost</c> used to determine the cost of an edge (if needed - can be null).</param>
-        public static void CarveCorridor<N, E, R>(this MazeBuilderAbstract<N, E> mazeBuilder, PassageRasterizerType rasterizer, GridRoom<R> room1, GridRoom<R> room2, MazePathCost<N, E> mazePathCost = null)
+        public static void CarveCorridor<N, E, R>(this IMazeBuilder<N, E> mazeBuilder, PassageRasterizerType rasterizer, GridRoom<R> room1, GridRoom<R> room2, MazePathCost<N, E> mazePathCost = null)
         {
             switch (rasterizer)
             {
@@ -78,7 +78,7 @@ namespace CrawfisSoftware.Dungeons
         /// <typeparam name="R">The type of the room data.</typeparam>
         /// <param name="mazeBuilder">The underlying MazeBuilder</param>
         /// <param name="room">A <c>GridRoom</c> to carve from.</param>
-        public static void CarveGridRoom<N, E, R>(this MazeBuilderAbstract<N, E> mazeBuilder, GridRoom<R> room)
+        public static void CarveGridRoom<N, E, R>(this IMazeBuilder<N, E> mazeBuilder, GridRoom<R> room)
         {
             int width = mazeBuilder.Width;
             int left = room.minX;
@@ -153,7 +153,7 @@ namespace CrawfisSoftware.Dungeons
         /// <param name="room2">A <c>GridRoom</c> to carve to.</param>
         /// <param name="edgeCostFunction">An <c>EdgeCostDelegate</c> used to determine the cost of an edge.</param>
         /// <param name="preserveExistingCells">Boolean indicating whether to only replace maze cells that are undefined.</param>
-        public static void CarveShortestPath<N, E, R>(this MazeBuilderAbstract<N, E> mazeBuilder, GridRoom<R> room1, GridRoom<R> room2, EdgeCostDelegate<E> edgeCostFunction, bool preserveExistingCells = false)
+        public static void CarveShortestPath<N, E, R>(this IMazeBuilder<N, E> mazeBuilder, GridRoom<R> room1, GridRoom<R> room2, EdgeCostDelegate<E> edgeCostFunction, bool preserveExistingCells = false)
         {
             int room1CenterX = room1.minX + room1.width / 2;
             int room1CenterY = room1.minY + room1.height / 2;
@@ -177,7 +177,7 @@ namespace CrawfisSoftware.Dungeons
         /// <param name="room1">A <c>GridRoom</c> to carve from.</param>
         /// <param name="room2">A <c>GridRoom</c> to carve to.</param>
         /// <param name="preserveExistingCells">Boolean indicating whether to only replace maze cells that are undefined.</param>
-        public static void CarveElbowPassage<N, E, R>(this MazeBuilderAbstract<N, E> mazeBuilder, GridRoom<R> room1, GridRoom<R> room2, bool preserveExistingCells = false)
+        public static void CarveElbowPassage<N, E, R>(this IMazeBuilder<N, E> mazeBuilder, GridRoom<R> room1, GridRoom<R> room2, bool preserveExistingCells = false)
         {
             int room1CenterX = room1.minX + room1.width / 2;
             int room1CenterY = room1.minY + room1.height / 2;
