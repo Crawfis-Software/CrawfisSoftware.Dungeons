@@ -79,12 +79,14 @@ namespace CrawfisSoftware.Dungeons
             {
                 yDistance = y1 - v2;
             }
+            xDistance = Math.Max(0, xDistance);
+            yDistance = Math.Max(0, yDistance);
             int distance = xDistance + yDistance;
-            if (distance == 0)
-            {
-                // Not entirely accurate if one is completely within the other
-                distance = Math.Min(Math.Max(x1, u1) - Math.Max(x2, u2), Math.Max(y1, v1) - Math.Max(y2, v2));
-            }
+            //if (distance == 0)
+            //{
+            //    // Not entirely accurate if one is completely within the other
+            //    distance = Math.Min(Math.Max(x1, u1) - Math.Max(x2, u2), Math.Max(y1, v1) - Math.Max(y2, v2));
+            //}
             return distance;
         }
     }

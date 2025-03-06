@@ -58,6 +58,9 @@ namespace CrawfisSoftware.Dungeons
         {
             switch (rasterizer)
             {
+                case PassageRasterizerType.Opening:
+                    mazeBuilder.CarveOpeningPassage(room1, room2);
+                    break;
                 case PassageRasterizerType.Elbow:
                     mazeBuilder.CarveElbowPassage(room1, room2);
                     break;
@@ -178,6 +181,15 @@ namespace CrawfisSoftware.Dungeons
         /// <param name="room2">A <c>GridRoom</c> to carve to.</param>
         /// <param name="preserveExistingCells">Boolean indicating whether to only replace maze cells that are undefined.</param>
         public static void CarveElbowPassage<N, E, R>(this IMazeBuilder<N, E> mazeBuilder, GridRoom<R> room1, GridRoom<R> room2, bool preserveExistingCells = false)
+        {
+            int room1CenterX = room1.minX + room1.width / 2;
+            int room1CenterY = room1.minY + room1.height / 2;
+            int room2CenterX = room2.minX + room2.width / 2;
+            int room2CenterY = room2.minY + room2.height / 2;
+            mazeBuilder.CarveHorizontalSpan(room1CenterY, room1CenterX, room2CenterX, preserveExistingCells);
+            mazeBuilder.CarveVerticalSpan(room2CenterX, room1CenterY, room2CenterY, preserveExistingCells);
+        }
+        public static void CarveOpeningPassage<N, E, R>(this IMazeBuilder<N, E> mazeBuilder, GridRoom<R> room1, GridRoom<R> room2, bool preserveExistingCells = false)
         {
             int room1CenterX = room1.minX + room1.width / 2;
             int room1CenterY = room1.minY + room1.height / 2;
