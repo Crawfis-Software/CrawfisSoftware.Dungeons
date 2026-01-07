@@ -1,18 +1,28 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RepositoryUrl>https://github.com/Crawfis-Software/CrawfisSoftware.Dungeons</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <Description>Standard library for CrawfisSoftware.Dungeons.</Description>
+    <Company>Crawfis Software</Company>
+    <PackageProjectUrl>https://github.com/Crawfis-Software</PackageProjectUrl>
+    <Copyright>Copyright (c) Crawfis Software 2026</Copyright>
+    <Authors>Crawfis Software</Authors>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <LangVersion>10.0</LangVersion>
+    <RepositoryType>git</RepositoryType>
+    <PackageId>CrawfisSoftware.Dungeons</PackageId>
     <Nullable>enable</Nullable>
-    <RootNamespace>CrawfisSoftware.Dungeons</RootNamespace>
-    <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <DocumentationFile>$(SolutionDir)Documentation\CrawfisSoftware.Dungeons.xml</DocumentationFile>
-    <Copyright>Crawfis Software, 2025</Copyright>
-    <BaseOutputPath>$(SolutionDir)\bin\</BaseOutputPath>
+    <TargetFrameworks>netstandard2.1;net8.0</TargetFrameworks>
   </PropertyGroup>
-
   <ItemGroup>
-    <ProjectReference Include="..\Graph\IGraph\CrawfisSoftware.IGraph.csproj" />
-    <ProjectReference Include="..\Graph\Maze\CrawfisSoftware.Maze.csproj" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
-
+  <ItemGroup>
+    <PackageReference Include="CrawfisSoftware.IGraph" Version="0.1.*" />
+    <PackageReference Include="CrawfisSoftware.Maze" Version="0.1.*" />
+  </ItemGroup>
 </Project>
