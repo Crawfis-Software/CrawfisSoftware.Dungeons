@@ -1,11 +1,11 @@
-name: package
+﻿name: package
 
 env:
   DOTNET_VERSION: '8.0.x'
   NODE_VERSION: '20'
-  DOTNET_PROJECT: 'CrawfisSoftware.Tiling.csproj'
-  UPM_PACKAGE_ID: 'com.crawfissoftware.tiling'
-  UPM_PACKAGE_DIR: 'Packages/com.crawfissoftware.tiling'
+  DOTNET_PROJECT: 'CrawfisSoftware.Dungeons.csproj'
+  UPM_PACKAGE_ID: 'com.crawfissoftware.dungeons'
+  UPM_PACKAGE_DIR: 'Packages/com.crawfissoftware.dungeons'
 
 # This workflow builds and packages the project on versioned releases.
 #
