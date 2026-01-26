@@ -7,129 +7,164 @@ The workflow kit will:
 - publish NuGet packages to nuget.org using OIDC (`NuGet/login@v1`)
 - attach artifacts to the GitHub Release
 
-This repo contains a reusable GitHub Actions setup that you can reuse in two ways:
-## **Preferred: use the zip kit**
-   - Unzip the workflow-kit.zip file into another repo root and adjust a few `env` values (see below).
+## How to Use This Template
 
-## **Manual: copy individual files**
-Copy these files and folders into the target repo root:
+This repository provides a complete NuGet workflow as a downloadable package (`workflow-kit.zip`). Simply download the zip, extract it into your repository, and run the automated setup script.
 
-- `.github/workflows/nuget-package.yml`
-- `.github/workflows/release-please.yml`
-- `.github/workflows/commitlint.yml`
-- `.release-please-config.json`
-- `.release-please-manifest.json`
-- `commitlint.config.cjs`
-- `docs/WorkflowKit.md`
+**No manual configuration required** - the setup script handles everything automatically!
 
-## Minimal repo-specific edits
+## Required Setup
 
-Edit `.github/workflows/nuget-package.yml` and update the top-level `env` values:
+### NuGet.org Configuration (One-time)
 
-- `DOTNET_PROJECT`: path to the `.csproj` to pack
-- `UPM_PACKAGE_ID`: e.g. `com.yourcompany.yourlib`
-- `UPM_PACKAGE_DIR`: e.g. `Packages/com.yourcompany.yourlib`
+Before the workflow can publish to NuGet.org, you must configure your repository as a trusted source:
 
-If a repo has **no Unity package**, you can leave the UPM values alone; the workflow will just print a skip message.
+1. Go to [NuGet.org](https://www.nuget.org) and sign in
+2. Navigate to: Username → API Keys
+3. Scroll to "Package owners" section
+4. Click "Add Package" → "Add new..." → "Configure GitHub Actions"
+5. Select your organization and repository
+6. Save
 
-## Required GitHub settings
+This enables OIDC-based publishing (no API keys needed in GitHub!).
 
-### Secrets
+### GitHub Secrets
 
-- `NUGET_USER`: username/email used by `NuGet/login@v1` to mint a temporary API key via OIDC
+- `NUGET_USER`: Your NuGet.org username or email (must match NuGet.org account)
+  - Settings → Secrets and variables → Actions → New repository secret
 
-### Environment
+### GitHub Environment
 
 - Create an environment named `release` (used by the `publish-nuget` job)
+  - Settings → Environments → New environment → Name: `release`
 
 ## Expected repo structure (recommended)
 
 - `<RepoRoot>/<YourLibrary>.csproj`
 - Optional Unity UPM folder: `Packages/<UPM_PACKAGE_ID>/package.json`
 
-## Creating a new �drop-in zip�
+## For Maintainers: Regenerating workflow-kit.zip
 
-If you change the workflow and want to create a new zip, there is a PowerShell script for that.
-From the repository root in a PowerShell-capable terminal (including the GitHub Copilot terminal in Visual Studio), run:
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File tools/create-workflow-kit.ps1 -OutFile workflow-kit.zip
-```
-
-If you omit `-OutFile`, the script will default to `workflow-kit.zip` in the repo root:
+If you're maintaining this template repository and need to regenerate `workflow-kit.zip` after making changes:
 
 ```powershell
+# From the template repository root
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/create-workflow-kit.ps1
 ```
 
-The script:
+This regenerates `workflow-kit.zip` with all the latest files. Commit the updated zip to the repository so users can download the latest version.
 
-- validates that all expected files exist
-- stages them with their relative paths (e.g., `.github/workflows/...`, `docs/WorkflowKit.md`)
-- creates `workflow-kit.zip` in the repo root
+## Installation Steps
 
-## Using the kit in another repository
+### Step 1: Download and Extract
 
-### Quick Setup (Recommended)
+Download `workflow-kit.zip` from this repository and extract it into your target repository root:
 
-1. Unzip `workflow-kit.zip` into the target repo root.
-2. Run the complete setup script:
-   ```powershell
-   # Auto-detect everything (easiest)
-   powershell -NoProfile -ExecutionPolicy Bypass -File tools/Setup-NuGetWorkflow.ps1 -AutoDetect
+```powershell
+# From your target repository root
+Expand-Archive path\to\workflow-kit.zip -DestinationPath . -Force
+```
 
-   # Or specify values explicitly
-   powershell -NoProfile -ExecutionPolicy Bypass -File tools/Setup-NuGetWorkflow.ps1 `
-     -CsprojPath "YourProject.csproj" `
-     -Authors "Your Company" `
-     -Description "Your library description"
-   ```
+This extracts all workflow files, configuration files, and setup tools.
 
-   This single script:
-   - ✅ Updates your .csproj with all required NuGet properties
-   - ✅ Updates the workflow file with your project-specific values
-   - ✅ Validates the configuration
-   - ✅ Provides next-step instructions
+### Step 2: Run Automated Setup
 
-3. Follow the displayed next steps to complete GitHub setup.
+Run the setup script to automatically configure everything:
 
-### Manual Setup (Advanced)
+```powershell
+# Recommended: Auto-detect all values
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/Setup-NuGetWorkflow.ps1 -AutoDetect
+```
 
-If you prefer to configure things step-by-step:
+**What the script does:**
+- ✅ Finds your .csproj file automatically
+- ✅ Updates it with all required NuGet packaging properties
+- ✅ Configures the workflow file with your project details
+- ✅ Validates the configuration
+- ✅ Provides clear next-step instructions
 
-1. Unzip `workflow-kit.zip` into the target repo root.
+**Advanced usage** (if you want to specify values):
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/Setup-NuGetWorkflow.ps1 `
+  -CsprojPath "YourProject.csproj" `
+  -Authors "Your Company" `
+  -Description "Your library description"
+```
 
-2. **Update your .csproj for NuGet packaging:**
-   ```powershell
-   # Interactive mode
-   powershell -NoProfile -ExecutionPolicy Bypass -File tools/Update-CsprojForNuGet.ps1 -CsprojPath "YourProject.csproj"
-   ```
-   See `tools/CSPROJ-CHECKLIST.md` for manual checklist.
+### Step 3: Configure GitHub
 
-3. **Update workflow configuration:**
-   ```powershell
-   # Auto-detect values
-   powershell -NoProfile -ExecutionPolicy Bypass -File tools/Update-WorkflowConfig.ps1 -AutoDetect
+The setup script will tell you what to do, but here's the summary:
 
-   # Or specify explicitly
-   powershell -NoProfile -ExecutionPolicy Bypass -File tools/Update-WorkflowConfig.ps1 `
-     -DotnetProject "YourProject.csproj" `
-     -UpmPackageId "com.company.package" `
-     -UpmPackageDir "Packages/com.company.package"
-   ```
+1. **Add Repository Secret** (required for NuGet publishing):
+   - Settings → Secrets and variables → Actions → New repository secret
+   - Name: `NUGET_USER`
+   - Value: Your NuGet.org username or email
 
-4. **GitHub repository settings:**
-   - Add secret: `NUGET_USER` (your NuGet.org username/email)
-   - Create environment: `release`
+2. **Create Release Environment** (required for workflow):
+   - Settings → Environments → New environment
+   - Name: `release`
 
-5. **Test locally:**
-   ```bash
-   dotnet pack YourProject.csproj -c Release -o ./artifacts
-   # Verify both .nupkg and .snupkg files are created
-   ```
+### Step 4: Verify Locally
 
-6. **Trigger the workflow:**
-   - Commit with conventional commit message (e.g., `feat: add new feature`)
-   - Push to main branch
-   - Release Please will create a PR
-   - Merge the PR to trigger release and NuGet publish
+Test that everything works:
+
+```bash
+dotnet pack YourProject.csproj -c Release -o ./artifacts
+```
+
+Verify both files are created:
+- `YourPackage.x.y.z.nupkg`
+- `YourPackage.x.y.z.snupkg`
+
+### Step 5: Commit and Create Version Tag
+
+```bash
+# Commit your changes
+git add .
+git commit -m "feat: add NuGet workflow"
+git push
+
+# Create and push a version tag to trigger publishing
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+**What happens:**
+1. The workflow triggers on the `v1.0.0` tag
+2. Builds and publishes your package to NuGet.org
+3. Creates a GitHub Release with artifacts
+4. Release Please starts tracking for future releases
+
+**For future releases:**
+- Make commits with conventional commit messages (feat:, fix:, etc.)
+- Release Please creates a PR with version bump and changelog
+- Merge the PR
+- **Manually create and push the tag** matching the version from the PR:
+  ```bash
+  git pull
+  git tag v1.1.0  # Use version from Release Please PR
+  git push origin v1.1.0
+  ```
+
+---
+
+## Advanced Usage
+
+### Manual Step-by-Step Configuration
+
+If you need finer control or want to run individual setup steps:
+
+**Update .csproj only:**
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/Update-CsprojForNuGet.ps1 -CsprojPath "YourProject.csproj"
+```
+
+**Update workflow configuration only:**
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/Update-WorkflowConfig.ps1 -AutoDetect
+```
+
+**Manual configuration reference:**
+See `tools/CSPROJ-CHECKLIST.md` for a complete checklist of required properties if you prefer to edit files manually.
+
+---
